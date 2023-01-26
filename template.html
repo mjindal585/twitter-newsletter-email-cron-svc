@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dynamic Values</title>
+  </head>
+  <body>
+    <h1>Bollywood Tweets</h1>
+    <h2>Top Five Positive Tweets</h2>
+    <ul id="positive-tweets">
+    </ul>
+    <h2>Top Five Negative Tweets</h2>
+    <ul id="negative-tweets">
+    </ul>
+    <script>
+      // Get dynamic values from the response
+      const topFivePositive = <%= JSON.stringify(data.top_five_positive) %>;
+      const topFiveNegative = <%= JSON.stringify(data.top_five_negative) %>;
+      
+      // Update HTML elements with dynamic values
+      for (let i = 0; i < topFivePositive.length; i++) {
+        const tweet = topFivePositive[i];
+        document.getElementById("positive-tweets").innerHTML += `
+          <li>
+            <p>${tweet.text}</p>
+            <p>by <strong>${tweet.name}</strong> (@${tweet.screen_name})</p>
+            <p>Polarity: ${tweet.polarity}</p>
+          </li>
+        `;
+      }
+      for (let i = 0; i < topFiveNegative.length; i++) {
+        const tweet = topFiveNegative[i];
+        document.getElementById("negative-tweets").innerHTML += `
+          <li>
+            <p>${tweet.text}</p>
+            <p>by <strong>${tweet.name}</strong> (@${tweet.screen_name})</p>
+            <p>Polarity: ${tweet.polarity}</p>
+          </li>
+        `;
+      }
+    </script>
+  </body>
+</html>
