@@ -1,0 +1,27 @@
+{
+  "name": "twitter-newsletter-email-cron-svc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mjindal585/twitter-newsletter-email-cron-svc.git"
+  },
+  "author": "Mohit Jindal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mjindal585/twitter-newsletter-email-cron-svc/issues"
+  },
+  "homepage": "https://github.com/mjindal585/twitter-newsletter-email-cron-svc#readme",
+  "dependencies": {
+    "axios": "^1.2.4",
+    "cron": "^2.2.0",
+    "dotenv": "^16.0.3",
+    "mongodb": "^4.13.0",
+    "nodemailer": "^6.9.0"
+  }
+}
