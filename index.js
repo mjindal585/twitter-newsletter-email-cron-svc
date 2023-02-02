@@ -1,5 +1,5 @@
 const axios = require('axios');
-const cron = require('cron');
+const CronJob = require('cron').CronJob;
 const MongoClient = require('mongodb').MongoClient;
 const nodemailer = require('nodemailer');
 
@@ -126,6 +126,7 @@ const renderHtml = (positiveTweets, negativeTweets) => {
 
 // Send an email to the user with the tweetData data
 const sendNewsletterEmail = async (user) => {
+    console.log(`sendNewsletterEmail for user ${JSON.stringify(user, null, 4)} at ${new Date()}}`)
     const { category } = user;
     const tweetData = await fetchTwitterData(category);
     const positiveTweets = tweetData.data.top_five_positive;
@@ -159,13 +160,20 @@ const sendNewsletterEmail = async (user) => {
 
 // Retrieve the users from the MongoDB collection and send them the tweetData data via email
 const sendNewsletterEmails = () => {
+    console.log(`sendNewsletterEmails initialized at ${new Date()}`)
     MongoClient.connect(mongodb_url, { useNewUrlParser: true }, (err, client) => {
         if (err) throw err;
         const db = client.db(dbName);
-        db.collection(collectionName).find({ deletedAt: { $exists: false } }).toArray((err, users) => {
+        db.collection(collectionName).find({ deletedAt: { $exists: false } }).toArray(async (err, users) => {
             if (err) throw err;
-            users.forEach(async (user) => {
-                await sendNewsletterEmail(user);
+            await users.forEach(async (user) => {
+                const callSendEmail = (user) => {
+                    console.log('callSendEmail :: ', new Date(), user)
+                    setTimeout(async () => {
+                        await sendNewsletterEmail(user);
+                    }, 60000);
+                }
+                callSendEmail(user);
             });
             client.close();
         });
@@ -173,5 +181,5 @@ const sendNewsletterEmails = () => {
 }
 
 // Schedule the cron
-const job = new cron.CronJob('*/1 * * * * *', sendNewsletterEmails, null, false);
-job.start();
+// new CronJob('* * * * * *', sendNewsletterEmails, null, true);
+new CronJob('00 00 00 * * *', sendNewsletterEmails, null, true);
