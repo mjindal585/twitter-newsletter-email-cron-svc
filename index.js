@@ -1,7 +1,9 @@
 const axios = require('axios');
-const CronJob = require('cron').CronJob;
+const cron = require("node-cron");
 const MongoClient = require('mongodb').MongoClient;
 const nodemailer = require('nodemailer');
+const express = require("express");
+app = express(); // Initializing app
 
 require('dotenv').config();
 
@@ -12,6 +14,7 @@ const dbName = process.env.DB_NAME;
 const collectionName = process.env.COLLECTION_NAME;
 const twitterDataPullAPI = process.env.TWITTER_DATA_PULL_SVC_BASE_URL + '/get_sentiments';
 const uiUrl = process.env.UI_URL;
+const port = process.env.PORT || 6000;
 
 // Fetch the tweetData data from the API
 const fetchTwitterData = async (query) => {
@@ -167,13 +170,7 @@ const sendNewsletterEmails = () => {
         db.collection(collectionName).find({ deletedAt: { $exists: false } }).toArray(async (err, users) => {
             if (err) throw err;
             await users.forEach(async (user) => {
-                const callSendEmail = (user) => {
-                    console.log('callSendEmail :: ', new Date(), user)
-                    setTimeout(async () => {
-                        await sendNewsletterEmail(user);
-                    }, 60000);
-                }
-                callSendEmail(user);
+                await sendNewsletterEmail(user);
             });
             client.close();
         });
@@ -181,5 +178,7 @@ const sendNewsletterEmails = () => {
 }
 
 // Schedule the cron
-// new CronJob('* * * * * *', sendNewsletterEmails, null, true);
-new CronJob('00 00 00 * * *', sendNewsletterEmails, null, true);
+cron.schedule('* */1 * * * *', sendNewsletterEmails, null, true);
+// new CronJob('00 00 00 * * *', sendNewsletterEmails, null, true);
+app.listen(port);
+
