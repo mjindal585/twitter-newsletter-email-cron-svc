@@ -162,7 +162,7 @@ const sendNewsletterEmail = async (user) => {
 }
 
 // Retrieve the users from the MongoDB collection and send them the tweetData data via email
-const sendNewsletterEmails = () => {
+function sendNewsletterEmails() {
     console.log(`sendNewsletterEmails initialized at ${new Date()}`)
     MongoClient.connect(mongodb_url, { useNewUrlParser: true }, (err, client) => {
         if (err) throw err;
@@ -178,7 +178,10 @@ const sendNewsletterEmails = () => {
 }
 
 // Schedule the cron
-cron.schedule('* */1 * * * *', sendNewsletterEmails, null, true);
-// new CronJob('00 00 00 * * *', sendNewsletterEmails, null, true);
+// cron.schedule('* */1 * * * *', function () {
+//     console.log('running at ', new Date())
+//     sendNewsletterEmails();
+// });
+cron.schedule('00 00 00 * * *', sendNewsletterEmails);
 app.listen(port);
 
