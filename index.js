@@ -182,6 +182,6 @@ function sendNewsletterEmails() {
 //     console.log('running at ', new Date())
 //     sendNewsletterEmails();
 // });
-cron.schedule('00 00 00 * * *', sendNewsletterEmails);
+cron.schedule('00 00 00 * * *', () => sendNewsletterEmails());
 app.listen(port);
 
